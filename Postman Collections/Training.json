@@ -1,0 +1,923 @@
+{
+	"info": {
+		"_postman_id": "f237921c-3193-4591-ad31-285e7114a6b3",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Requests",
+			"item": [
+				{
+					"name": "store/order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "364ac5db-c03a-4c72-9a2f-0cf1d168d41c",
+								"exec": [
+									"const postPetRequest ={\r",
+									"\r",
+									"    url: 'https://petstore.swagger.io/v2/pet/',\r",
+									"    method:\"POST\",\r",
+									"    header:{\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"\r",
+									"    body: JSON.stringify({\r",
+									"        \r",
+									"    \"category\": {\r",
+									"        \"id\": 1,\r",
+									"        \"name\": \"dogs\"\r",
+									"    },\r",
+									"    \"name\": \"test\",\r",
+									"    \"photoUrls\": [\r",
+									"        \"string\"\r",
+									"    ],\r",
+									"    \"tags\": [\r",
+									"        {\r",
+									"            \"id\": 1,\r",
+									"            \"name\": \"test\"\r",
+									"        }\r",
+									"    ],\r",
+									"    \"status\": \"available\"\r",
+									"\r",
+									"\r",
+									"    })\r",
+									"};\r",
+									"pm.sendRequest(postPetRequest, function(error, response){\r",
+									"\r",
+									"    let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+									"\r",
+									"    let jsonData = JSON.parse(responseText);\r",
+									"    let id = jsonData.id.replace('\"', '');\r",
+									" \r",
+									"\r",
+									"    pm.collectionVariables.set(\"pet_id\",id);\r",
+									"\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "3f85ccba-fcc1-4463-a663-a4f34da65bda",
+								"exec": [
+									"let response = pm.response.json()\r",
+									"\r",
+									"pm.collectionVariables.set(\"order_id\",response.id);\r",
+									"\r",
+									"const getStoreId = {\r",
+									"    url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+									"    method: \"GET\",\r",
+									"    header:{\r",
+									"        'Content-Type':'application/json',\r",
+									"    },\r",
+									"\r",
+									"}\r",
+									"pm.sendRequest(getStoreId, function(error, response) {\r",
+									"    pm.test(\"GET StoreID code is 200\",function(){\r",
+									"        response.code == 200\r",
+									"    });\r",
+									"        pm.test(\"ID is available\",function(){\r",
+									"        pm.expect(response.text()).to.include(\"id\")\r",
+									"    });\r",
+									"        pm.test(\"Status is Placed\", function () {\r",
+									"        var jsonData = response.json();\r",
+									"        pm.expect(jsonData.status).to.eql(\"placed\");\r",
+									"    });\r",
+									"\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "6873abe8-79bc-4d83-be4f-ab8077e2cdf4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{$randomInt}},\r\n    \"petId\": {{pet_id}},\r\n    \"quantity\": 2,\r\n    \"shipDate\": \"{{$isoTimestamp}}\",\r\n    \"status\": \"placed\",\r\n    \"complete\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/store/order"
+					},
+					"response": []
+				},
+				{
+					"name": "/store/order/{orderId}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "49464a5c-885d-49d5-aa04-c0e8675d272e",
+								"exec": [
+									"pm.test(\"Status is PLACED\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"placed\");\r",
+									"});\r",
+									"pm.test(\"COMPLETE true\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.complete).to.eql(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0522c060-0b1d-4e28-afe0-0a3a0c52ddf1",
+								"exec": [
+									"const postOrderRequest ={\r",
+									"\r",
+									"    url: pm.environment.get(\"host\") + '/store/order/',\r",
+									"    method:\"POST\",\r",
+									"    header:{\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"        body: JSON.stringify({\r",
+									"        \r",
+									"    \r",
+									"    \"petId\": pm.collectionVariables.get(\"pet_id\"),\r",
+									"    \"quantity\": 2,\r",
+									"    \"shipDate\": '2024-01-19T22:38:01.782Z',\r",
+									"    \"status\": \"placed\",\r",
+									"    \"complete\": true\r",
+									"\r",
+									"    })\r",
+									"};\r",
+									"                pm.sendRequest(postOrderRequest, function(error, response) {\r",
+									"                      let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+									"                      let jsonData = JSON.parse(responseText);\r",
+									"                      let order_id = jsonData.id.replace('\"', '');\r",
+									"                      pm.collectionVariables.set(\"order_id\",order_id);\r",
+									"\r",
+									"                        pm.test(\"postOrderRequest Response code is 200\",function(){\r",
+									"                        response.code == 200   \r",
+									"            });\r",
+									"         });\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "8c5869dc-a235-4d9b-a5c0-e998b30af677",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/store/order/{{order_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "/store/inventory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "49464a5c-885d-49d5-aa04-c0e8675d272e",
+								"exec": [
+									"let response = pm.response.text();\r",
+									"\r",
+									"console.log(response);\r",
+									"\r",
+									"//Write a Regular expression that will return a group of numbers​\r",
+									"\r",
+									"let docRegex = new RegExp (/\\d+/, 'i');\r",
+									"\r",
+									"\r",
+									"// Matcher will return a group that will be and Order Id for example​\r",
+									"\r",
+									"let id  = response.match(docRegex);\r",
+									"\r",
+									"\r",
+									"// Write value to a variable of your choice​\r",
+									"\r",
+									"console.log(id);\r",
+									"\r",
+									"pm.globals.set(\"pet_id\",id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "a97cc3b6-ad16-4968-933b-a3728288cf42",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"{{$randomLoremWord}}\"\r\n    },\r\n    \"name\": \"{{$randomWord}}\",\r\n    \"photoUrls\": [\r\n        \"string\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"test\"\r\n        }\r\n    ],\r\n    \"status\": \"{{pet_status}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/store/inventory"
+					},
+					"response": []
+				},
+				{
+					"name": "/store/order/{orderId}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "49464a5c-885d-49d5-aa04-c0e8675d272e",
+								"exec": [
+									"\r",
+									"const getStoreId = {\r",
+									"    url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+									"    method: \"GET\",\r",
+									"    header:{\r",
+									"        'Content-Type':'application/json',\r",
+									"    },\r",
+									"\r",
+									"}\r",
+									"pm.test(\"DELETE Response code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest(getStoreId, function(error, response) {\r",
+									"    pm.test(\"GET Response code is 404\",function(){\r",
+									"        response.code == 404\r",
+									"    })\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7f0196ed-4b0d-4f35-bbf9-527174248ec9",
+								"exec": [
+									"const postOrderRequest ={\r",
+									"\r",
+									"    url: pm.environment.get(\"host\") + '/store/order/',\r",
+									"    method:\"POST\",\r",
+									"    header:{\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"        body: JSON.stringify({\r",
+									"        \r",
+									"    \r",
+									"    \"petId\": pm.collectionVariables.get(\"pet_id\"),\r",
+									"    \"quantity\": 2,\r",
+									"    \"shipDate\": '2024-01-19T22:38:01.782Z',\r",
+									"    \"status\": \"placed\",\r",
+									"    \"complete\": true\r",
+									"\r",
+									"    })\r",
+									"};\r",
+									"\r",
+									"const getStoreId = {\r",
+									"    url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+									"    method: \"GET\",\r",
+									"    header:{\r",
+									"        'Content-Type':'application/json',\r",
+									"    },\r",
+									"\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"    pm.sendRequest(postOrderRequest, function(error, response) {\r",
+									"                      let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+									"                      let jsonData = JSON.parse(responseText);\r",
+									"                      let order_id = jsonData.id\r",
+									"                      pm.collectionVariables.set(\"order_id\",order_id);\r",
+									"\r",
+									"                        pm.test(\"postOrderRequest Response code is 200\",function(){\r",
+									"                        response.code == 200   \r",
+									"            });\r",
+									"    pm.sendRequest(getStoreId, function(error, response) {\r",
+									"                pm.test(\"GET StoreID code is 200\",function(){\r",
+									"                response.code == 200\r",
+									"                                    });\r",
+									"                    pm.test(\"ID is available\",function(){\r",
+									"                    pm.expect(response.text()).to.include(\"id\")\r",
+									"                                    });\r",
+									"                    pm.test(\"Status is Placed\", function () {\r",
+									"                        var jsonData = response.json();\r",
+									"                         pm.expect(jsonData.status).to.eql(\"placed\");\r",
+									"                                    });\r",
+									"                             });\r",
+									"                     });\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "594952ea-eeb2-4141-bc30-906c45b02316",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/store/order/{{order_id}}"
+					},
+					"response": []
+				}
+			],
+			"id": "d8c6b925-70c6-441f-a650-75127fb217c6"
+		},
+		{
+			"name": "store/order",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "364ac5db-c03a-4c72-9a2f-0cf1d168d41c",
+						"exec": [
+							"const postPetRequest ={\r",
+							"\r",
+							"    url: 'https://petstore.swagger.io/v2/pet/',\r",
+							"    method:\"POST\",\r",
+							"    header:{\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"\r",
+							"    body: JSON.stringify({\r",
+							"        \r",
+							"    \"category\": {\r",
+							"        \"id\": 1,\r",
+							"        \"name\": \"dogs\"\r",
+							"    },\r",
+							"    \"name\": \"test\",\r",
+							"    \"photoUrls\": [\r",
+							"        \"string\"\r",
+							"    ],\r",
+							"    \"tags\": [\r",
+							"        {\r",
+							"            \"id\": 1,\r",
+							"            \"name\": \"test\"\r",
+							"        }\r",
+							"    ],\r",
+							"    \"status\": \"available\"\r",
+							"\r",
+							"\r",
+							"    })\r",
+							"};\r",
+							"pm.sendRequest(postPetRequest, function(error, response){\r",
+							"\r",
+							"    let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+							"\r",
+							"    let jsonData = JSON.parse(responseText);\r",
+							"    let id = jsonData.id.replace('\"', '');\r",
+							" \r",
+							"\r",
+							"    pm.collectionVariables.set(\"pet_id\",id);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "3f85ccba-fcc1-4463-a663-a4f34da65bda",
+						"exec": [
+							"let response = pm.response.json()\r",
+							"\r",
+							"pm.collectionVariables.set(\"order_id\",response.id);\r",
+							"\r",
+							"const getStoreId = {\r",
+							"    url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+							"    method: \"GET\",\r",
+							"    header:{\r",
+							"        'Content-Type':'application/json',\r",
+							"    },\r",
+							"\r",
+							"}\r",
+							"pm.sendRequest(getStoreId, function(error, response) {\r",
+							"    pm.test(\"GET StoreID code is 200\",function(){\r",
+							"        response.code == 200\r",
+							"    });\r",
+							"        pm.test(\"ID is available\",function(){\r",
+							"        pm.expect(response.text()).to.include(\"id\")\r",
+							"    });\r",
+							"        pm.test(\"Status is Placed\", function () {\r",
+							"        var jsonData = response.json();\r",
+							"        pm.expect(jsonData.status).to.eql(\"placed\");\r",
+							"    });\r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "d18fec61-700b-4cd9-8679-ad146b74f7da",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": {{$randomInt}},\r\n    \"petId\": {{pet_id}},\r\n    \"quantity\": 2,\r\n    \"shipDate\": \"{{$isoTimestamp}}\",\r\n    \"status\": \"placed\",\r\n    \"complete\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{host}}/store/order"
+			},
+			"response": []
+		},
+		{
+			"name": "/store/order/{orderId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "49464a5c-885d-49d5-aa04-c0e8675d272e",
+						"exec": [
+							"pm.test(\"Status is PLACED\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.status).to.eql(\"placed\");\r",
+							"});\r",
+							"pm.test(\"COMPLETE true\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.complete).to.eql(true);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0522c060-0b1d-4e28-afe0-0a3a0c52ddf1",
+						"exec": [
+							"const postOrderRequest ={\r",
+							"\r",
+							"    url: pm.environment.get(\"host\") + '/store/order/',\r",
+							"    method:\"POST\",\r",
+							"    header:{\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"        body: JSON.stringify({\r",
+							"        \r",
+							"    \r",
+							"    \"petId\": pm.collectionVariables.get(\"pet_id\"),\r",
+							"    \"quantity\": 2,\r",
+							"    \"shipDate\": '2024-01-19T22:38:01.782Z',\r",
+							"    \"status\": \"placed\",\r",
+							"    \"complete\": true\r",
+							"\r",
+							"    })\r",
+							"};\r",
+							"                pm.sendRequest(postOrderRequest, function(error, response) {\r",
+							"                      let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+							"                      let jsonData = JSON.parse(responseText);\r",
+							"                      let order_id = jsonData.id.replace('\"', '');\r",
+							"                      pm.collectionVariables.set(\"order_id\",order_id);\r",
+							"\r",
+							"                        pm.test(\"postOrderRequest Response code is 200\",function(){\r",
+							"                        response.code == 200   \r",
+							"            });\r",
+							"         });\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "0091ea05-9892-4806-855d-aa34c595150b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{host}}/store/order/{{order_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "/store/order/{orderId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "49464a5c-885d-49d5-aa04-c0e8675d272e",
+						"exec": [
+							"\r",
+							"const getStoreId = {\r",
+							"    url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+							"    method: \"GET\",\r",
+							"    header:{\r",
+							"        'Content-Type':'application/json',\r",
+							"    },\r",
+							"\r",
+							"}\r",
+							"pm.test(\"DELETE Response code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.sendRequest(getStoreId, function(error, response) {\r",
+							"    pm.test(\"GET Response code is 404\",function(){\r",
+							"        response.code == 404\r",
+							"    })\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7f0196ed-4b0d-4f35-bbf9-527174248ec9",
+						"exec": [
+							"const postOrderRequest ={\r",
+							"\r",
+							"    url: pm.environment.get(\"host\") + '/store/order/',\r",
+							"    method:\"POST\",\r",
+							"    header:{\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"        body: JSON.stringify({\r",
+							"        \r",
+							"    \r",
+							"    \"petId\": pm.collectionVariables.get(\"pet_id\"),\r",
+							"    \"quantity\": 2,\r",
+							"    \"shipDate\": '2024-01-19T22:38:01.782Z',\r",
+							"    \"status\": \"placed\",\r",
+							"    \"complete\": true\r",
+							"\r",
+							"    })\r",
+							"};\r",
+							"\r",
+							"const getStoreId = {\r",
+							"    url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+							"    method: \"GET\",\r",
+							"    header:{\r",
+							"        'Content-Type':'application/json',\r",
+							"    },\r",
+							"\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"    pm.sendRequest(postOrderRequest, function(error, response) {\r",
+							"                      let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+							"                      let jsonData = JSON.parse(responseText);\r",
+							"                      let order_id = jsonData.id\r",
+							"                      pm.collectionVariables.set(\"order_id\",order_id);\r",
+							"\r",
+							"                        pm.test(\"postOrderRequest Response code is 200\",function(){\r",
+							"                        response.code == 200   \r",
+							"            });\r",
+							"    pm.sendRequest(getStoreId, function(error, response) {\r",
+							"                pm.test(\"GET StoreID code is 200\",function(){\r",
+							"                response.code == 200\r",
+							"                                    });\r",
+							"                    pm.test(\"ID is available\",function(){\r",
+							"                    pm.expect(response.text()).to.include(\"id\")\r",
+							"                                    });\r",
+							"                    pm.test(\"Status is Placed\", function () {\r",
+							"                        var jsonData = response.json();\r",
+							"                         pm.expect(jsonData.status).to.eql(\"placed\");\r",
+							"                                    });\r",
+							"                             });\r",
+							"                     });\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "484b0f39-3ae4-451a-b21d-8ad5baaca219",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{host}}/store/order/{{order_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "/store/order/{orderId} v2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "473030cb-0f25-427f-a221-16e62e2c04f7",
+						"exec": [
+							"const postPetRequest ={\r",
+							"\r",
+							"    url: 'https://petstore.swagger.io/v2/pet/',\r",
+							"    method:\"POST\",\r",
+							"    header:{\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"\r",
+							"    body: JSON.stringify({\r",
+							"        \r",
+							"    \"category\": {\r",
+							"        \"id\": 1,\r",
+							"        \"name\": \"dogs\"\r",
+							"    },\r",
+							"    \"name\": \"test\",\r",
+							"    \"photoUrls\": [\r",
+							"        \"string\"\r",
+							"    ],\r",
+							"    \"tags\": [\r",
+							"        {\r",
+							"            \"id\": 1,\r",
+							"            \"name\": \"test\"\r",
+							"        }\r",
+							"    ],\r",
+							"    \"status\": \"available\"\r",
+							"\r",
+							"\r",
+							"    })\r",
+							"};\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.sendRequest(postPetRequest, function(error, response){\r",
+							"\r",
+							"    let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+							"\r",
+							"    let jsonData = JSON.parse(responseText);\r",
+							"    let id = jsonData.id.replace('\"', '');\r",
+							" \r",
+							"\r",
+							"    pm.collectionVariables.set(\"pet_id\",id);\r",
+							"\r",
+							"                            const postOrderRequest ={\r",
+							"\r",
+							"                                url: pm.environment.get(\"host\") + '/store/order/',\r",
+							"                                method:\"POST\",\r",
+							"                                header:{\r",
+							"                                    'Content-Type': 'application/json',\r",
+							"                                },\r",
+							"                                    body: JSON.stringify({\r",
+							"                                    \r",
+							"                                \r",
+							"                                \"petId\": pm.collectionVariables.get(\"pet_id\"),\r",
+							"                                \"quantity\": 2,\r",
+							"                                \"shipDate\": '2024-01-19T22:38:01.782Z',\r",
+							"                                \"status\": \"placed\",\r",
+							"                                \"complete\": true\r",
+							"\r",
+							"                                })\r",
+							"                            };\r",
+							"\r",
+							"\r",
+							"\r",
+							"    pm.sendRequest(postOrderRequest, function(error, response) {\r",
+							"                      let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
+							"                      let jsonData = JSON.parse(responseText);\r",
+							"                      let order_id = jsonData.id\r",
+							"                      pm.collectionVariables.set(\"order_id\",order_id);\r",
+							"\r",
+							"                        pm.test(\"postOrderRequest Response code is 200\",function(){\r",
+							"                        response.code == 200   \r",
+							"            });\r",
+							"                            const getStoreId = {\r",
+							"                                url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+							"                                method: \"GET\",\r",
+							"                                header:{\r",
+							"                                    'Content-Type':'application/json',\r",
+							"                                },\r",
+							"\r",
+							"}\r",
+							"\r",
+							"    pm.sendRequest(getStoreId, function(error, response) {\r",
+							"                pm.test(\"GET StoreID code is 200\",function(){\r",
+							"                response.code == 200\r",
+							"                                    });\r",
+							"                    pm.test(\"ID is available\",function(){\r",
+							"                    pm.expect(response.text()).to.include(\"id\")\r",
+							"                                    });\r",
+							"                    pm.test(\"Status is Placed\", function () {\r",
+							"                        var jsonData = response.json();\r",
+							"                         pm.expect(jsonData.status).to.eql(\"placed\");\r",
+							"                                    });\r",
+							"                             });\r",
+							"                     });\r",
+							"\r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "82f336d9-e851-4693-b641-60d6b449a95e",
+						"exec": [
+							"\r",
+							"const getStoreId = {\r",
+							"    url: pm.environment.get(\"host\") + '/store/order/' + pm.collectionVariables.get(\"order_id\"),\r",
+							"    method: \"GET\",\r",
+							"    header:{\r",
+							"        'Content-Type':'application/json',\r",
+							"    },\r",
+							"\r",
+							"}\r",
+							"pm.test(\"DELETE Response code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.sendRequest(getStoreId, function(error, response) {\r",
+							"    pm.test(\"GET Response code is 404\",function(){\r",
+							"        response.code == 404\r",
+							"    })\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "621eab86-2c14-40d6-9862-ec3db0fe9366",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{host}}/store/order/{{order_id}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "d8e1fa3c-454e-4bd5-ad7b-03e6bbdd6fde",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "8ef1749e-13bc-4521-85df-f83b3ffd6776",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "pet_id",
+			"value": ""
+		},
+		{
+			"key": "order_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
