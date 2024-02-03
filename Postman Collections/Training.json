@@ -572,6 +572,7 @@
 							"            });\r",
 							"         });\r",
 							"\r",
+							"// TEST 1\r",
 							"\r",
 							"\r",
 							"\r",
@@ -582,93 +583,6 @@
 				}
 			],
 			"id": "0091ea05-9892-4806-855d-aa34c595150b",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": {}
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "{{host}}/store/order/{{order_id}}"
-			},
-			"response": []
-		},
-		{
-			"name": "/store/order/{orderId} Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "49464a5c-885d-49d5-aa04-c0e8675d272e",
-						"exec": [
-							"pm.test(\"Status is PLACED\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.status).to.eql(\"placed\");\r",
-							"});\r",
-							"pm.test(\"COMPLETE true\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.complete).to.eql(true);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "0522c060-0b1d-4e28-afe0-0a3a0c52ddf1",
-						"exec": [
-							"const postOrderRequest ={\r",
-							"\r",
-							"    url: pm.environment.get(\"host\") + '/store/order/',\r",
-							"    method:\"POST\",\r",
-							"    header:{\r",
-							"        'Content-Type': 'application/json',\r",
-							"    },\r",
-							"        body: JSON.stringify({\r",
-							"        \r",
-							"    \r",
-							"    \"petId\": pm.collectionVariables.get(\"pet_id\"),\r",
-							"    \"quantity\": 2,\r",
-							"    \"shipDate\": '2024-01-19T22:38:01.782Z',\r",
-							"    \"status\": \"placed\",\r",
-							"    \"complete\": true\r",
-							"\r",
-							"    })\r",
-							"};\r",
-							"                pm.sendRequest(postOrderRequest, function(error, response) {\r",
-							"                      let responseText = response.text().replace(/([^\"\\w-])([-0-9.]{8,100})([^\"\\w-])/g, '$1\\\"$2\\\"$3');\r",
-							"                      let jsonData = JSON.parse(responseText);\r",
-							"                      let order_id = jsonData.id.replace('\"', '');\r",
-							"                      pm.collectionVariables.set(\"order_id\",order_id);\r",
-							"\r",
-							"                        pm.test(\"postOrderRequest Response code is 200\",function(){\r",
-							"                        response.code == 200   \r",
-							"            });\r",
-							"         });\r",
-							"\r",
-							"\r",
-							"\r",
-							"\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"id": "103b35de-f94f-4f7f-9453-a66396a6a0ab",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
