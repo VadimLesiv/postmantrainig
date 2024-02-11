@@ -936,7 +936,34 @@
 		},
 		{
 			"name": "Encode/Decode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7204749e-f869-4655-9498-cce053df8c80",
+						"exec": [
+							"console.log(encodeURIComponent(\"component log 0\"));\r",
+							"console.log(decodeURIComponent(\"component%20log%200\"))\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"id": "c67d1236-9f20-4c63-a9c1-f3487f567ef2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://www.google.com/"
+			},
+			"response": []
+		},
+		{
+			"name": "Кодирование/Декодирование Base64 (atob, btoa)",
+			"id": "59c8c81d-4d05-4790-9df2-484040a50997",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
