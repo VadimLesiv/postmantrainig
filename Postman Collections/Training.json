@@ -933,6 +933,18 @@
 				"url": "{{host}}/store/order/{{order_id}}"
 			},
 			"response": []
+		},
+		{
+			"name": "Encode/Decode",
+			"id": "c67d1236-9f20-4c63-a9c1-f3487f567ef2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
 		}
 	],
 	"event": [
