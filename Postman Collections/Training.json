@@ -963,6 +963,20 @@
 		},
 		{
 			"name": "Кодирование/Декодирование Base64 (atob, btoa)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c15c6f7a-adb0-4a49-8760-97fa0aef2db4",
+						"exec": [
+							"var atob = require('atob');\r",
+							"var btoa = require('btoa');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"id": "59c8c81d-4d05-4790-9df2-484040a50997",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
