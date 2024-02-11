@@ -971,7 +971,8 @@
 						"exec": [
 							"var atob = require('atob');\r",
 							"var btoa = require('btoa');\r",
-							""
+							"\r",
+							"console.log(atob(\"d2VsY29tZQo=\"))"
 						],
 						"type": "text/javascript"
 					}
