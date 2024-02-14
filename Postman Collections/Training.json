@@ -430,40 +430,7 @@
 							"\r",
 							"\r",
 							"\r",
-							"var template = `\r",
-							"<style type=\"text/css\">\r",
-							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
-							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
-							"    .tftable tr {background-color:#ffffff;}\r",
-							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
-							"    .tftable tr:hover {background-color:#e0ffff;}\r",
-							"</style>\r",
-							"\r",
-							"<table class=\"tftable\" border=\"1\">\r",
-							"    <tr>\r",
-							"        <th>ID</th>\r",
-							"        <th>Pet ID</th>\r",
-							"        <th>Quantity</th>\r",
-							"        <th>Ship Date</th>\r",
-							"        <th>Status</th>\r",
-							"        <th>Complete</th>\r",
-							"    </tr>\r",
-							"    <tr>\r",
-							"        <td>{{response.id}}</td>\r",
-							"        <td>{{response.petId}}</td>\r",
-							"        <td>{{response.quantity}}</td>\r",
-							"        <td>{{response.shipDate}}</td>\r",
-							"        <td>{{response.status}}</td>\r",
-							"        <td>{{response.complete}}</td>\r",
-							"    </tr>\r",
-							"</table>\r",
-							"`;\r",
-							"\r",
-							"function constructVisualizerPayload() {\r",
-							"    return {response: pm.response.json()}\r",
-							"}\r",
-							"\r",
-							"pm.visualizer.set(template, constructVisualizerPayload());"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -557,7 +524,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "49464a5c-885d-49d5-aa04-c0e8675d272e",
+						"id": "87e28bb3-7f42-4a94-98b1-1407d8293364",
 						"exec": [
 							"pm.test(\"Status is PLACED\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -574,7 +541,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "0522c060-0b1d-4e28-afe0-0a3a0c52ddf1",
+						"id": "32e15cd4-2c5f-4d4d-9e38-a3909320e55c",
 						"exec": [
 							"const postOrderRequest ={\r",
 							"\r",
@@ -931,60 +898,6 @@
 					}
 				},
 				"url": "{{host}}/store/order/{{order_id}}"
-			},
-			"response": []
-		},
-		{
-			"name": "Encode/Decode",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "7204749e-f869-4655-9498-cce053df8c80",
-						"exec": [
-							"console.log(encodeURIComponent(\"component log 0\"));\r",
-							"console.log(decodeURIComponent(\"component%20log%200\"))\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"id": "c67d1236-9f20-4c63-a9c1-f3487f567ef2",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "https://www.google.com/"
-			},
-			"response": []
-		},
-		{
-			"name": "Кодирование/Декодирование Base64 (atob, btoa)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "c15c6f7a-adb0-4a49-8760-97fa0aef2db4",
-						"exec": [
-							"var atob = require('atob');\r",
-							"var btoa = require('btoa');\r",
-							"\r",
-							"console.log(atob(\"d2VsY29tZQo=\"))"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"id": "59c8c81d-4d05-4790-9df2-484040a50997",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": []
 			},
 			"response": []
 		}
